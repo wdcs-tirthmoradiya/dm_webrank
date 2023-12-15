@@ -27,6 +27,17 @@ def read_csv(filename = 'keyword.csv'):
             keyword.append(line)
     return keyword
 
+@st.cache_resource(show_spinner=False)
+def get_chromedriver_path():
+    return shutil.which('chromedriver')
+
+def get_webdriver_service(logpath):
+    service = Service(
+        executable_path=get_chromedriver_path(),
+        log_output=logpath,
+    )
+    return service
+
 class WebRank:
     def __init__(self, latitude = None, longitude = None):
         opts = webdriver.ChromeOptions()
@@ -44,7 +55,7 @@ class WebRank:
         opts.add_argument("--disable-features=NetworkService")
         opts.add_argument("--window-size=1920x1080")
         opts.add_argument("--disable-features=VizDisplayCompositor")
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=opts)
+        self.driver = webdriver.Chrome(service=get_webdriver_service(),options=opts)
         self.driver.implicitly_wait(15)
         if lat is not None and lon is not None:
             self.driver.execute_cdp_cmd("Emulation.setGeolocationOverride", {
@@ -53,13 +64,13 @@ class WebRank:
                 "accuracy": 100,
             })
         self.driver.get("https://www.google.com")
-        geolocation_script = """
-            navigator.geolocation.getCurrentPosition(function(position) {
-                console.log("Latitude: " + position.coords.latitude);
-                console.log("Longitude: " + position.coords.longitude);
-            });
-        """
-        print(self.driver.execute_script(geolocation_script))
+        # geolocation_script = """
+        #     navigator.geolocation.getCurrentPosition(function(position) {
+        #         console.log("Latitude: " + position.coords.latitude);
+        #         console.log("Longitude: " + position.coords.longitude);
+        #     });
+        # """
+        # print(self.driver.execute_script(geolocation_script))
 
     def get_website_rank(self, keywords):
         pom = pageObjects(self.driver)
