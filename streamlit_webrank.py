@@ -37,6 +37,13 @@ class WebRank:
         opts.add_argument(f"--use-fake-ui-for-media-stream=\"{lat},{lon}\"")
         opts.add_argument(f"--use-fake-device-for-media-stream")
         opts.add_argument("start-maximized")
+        opts.add_argument("--headless")
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-dev-shm-usage")
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--disable-features=NetworkService")
+        opts.add_argument("--window-size=1920x1080")
+        opts.add_argument("--disable-features=VizDisplayCompositor")
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=opts)
         self.driver.implicitly_wait(15)
         if lat is not None and lon is not None:
