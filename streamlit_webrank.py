@@ -31,10 +31,9 @@ def read_csv(filename = 'keyword.csv'):
 def get_chromedriver_path():
     return shutil.which('chromedriver')
 
-def get_webdriver_service(logpath):
+def get_webdriver_service():
     service = Service(
         executable_path=get_chromedriver_path(),
-        log_output=logpath,
     )
     return service
 
